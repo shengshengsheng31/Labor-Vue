@@ -12,7 +12,7 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://152.136.139.149:8091'
 Vue.prototype.$http = axios
 axios.interceptors.request.use(config => {
-  config.headers.Authorization = 'Bearer ' + sessionStorage.getItem('token')
+  config.headers.Authorization = 'bearer ' + sessionStorage.getItem('token')
   return config
 })
 Vue.config.productionTip = false

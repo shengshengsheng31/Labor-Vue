@@ -6,8 +6,8 @@
         <form action ref="loginForm">
           <img src="@/assets/avator.svg" alt class="avator" />
           <h2>Welcome</h2>
-          <login-input @inputContent="getAccount" iconType="icon iconfont icon-usercenter"/>
-          <login-input inputType="password" autocomplete="current-password" iconType="icon iconfont icon-password" @inputContent="getPassword"/>
+          <login-input @inputContent="getAccount" iconType="icon iconfont icon-usercenter" inputTitle="Account"/>
+          <login-input inputType="password" autocomplete="current-password" iconType="icon iconfont icon-password" inputTitle="Password" @inputContent="getPassword"/>
           <a href="#">Forget Password</a>
           <input type="submit" class="btn" value="Login" @click.prevent="login" />
         </form>

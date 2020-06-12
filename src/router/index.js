@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Test from '../components/LoginInput.vue'
 import LaborCreate from '../views/LaborCreate.vue'
+import LaborSelect from '../views/LaborSelect.vue'
+import LaborList from '../views/LaborList.vue'
 
 Vue.use(VueRouter)
 
@@ -13,7 +15,9 @@ const routes = [
   },
   { path: '/login', component: Login },
   { path: '/test', component: Test },
-  { path: '/LaborCreate', component: LaborCreate }
+  { path: '/LaborCreate', component: LaborCreate },
+  { path: '/LaborSelect', component: LaborSelect },
+  { path: '/LaborList', component: LaborList }
 
 ]
 
