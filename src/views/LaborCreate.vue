@@ -15,8 +15,13 @@
           :prop="'options.' + index + '.goods'"
           :rules="laborFormRule.optionRule"
         >
-          <el-input v-model="item.goods"></el-input>
-          <el-button @click.prevent="removeOption(item)">删除</el-button>
+          <el-input v-model="item.goods">
+            <el-button
+              slot="append"
+              @click.prevent="removeOption(item)"
+              v-if="index===laborForm.options.length-1"
+            >删除</el-button>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('laborForm')">提交</el-button>
@@ -30,16 +35,23 @@
 <script>
 export default {
   data () {
+    var checkOption = (rule, value, callback) => {
+      if (value.match(/;/)) { return callback(new Error('不能在文字中包含英文的“;”')) }
+    }
     return {
       // 表单数据
       laborForm: {
-        title: '',
+        // title: `${new Date().getFullYear()}-${new Date().getMonth()}`,
+        title: this.getDate(),
         options: [{ goods: '', option: 'A' }, { goods: '', option: 'B' }, { goods: '', option: 'C' }]
       },
       // 表单规则
       laborFormRule: {
         titleRule: { required: true, message: '输入标题', trigger: 'blur' },
-        optionRule: { required: true, message: '劳保不能为空', trigger: 'blur' }
+        optionRule: [
+          { required: true, message: '劳保不能为空', trigger: 'blur' },
+          { validator: checkOption, trigger: 'blur' }
+        ]
       },
       // 提交到数据库的数据
       labor: {
@@ -65,7 +77,7 @@ export default {
           this.labor.Options = optioins.join(';')
           await this.$http.post('api/LaborHead/CreateLaborHead', this.labor).then(res => {
             this.$message.success('创建成功')
-            // 需要跳转到列表界面
+            this.$router.push('/LaborList')
           }).catch(err => {
             this.$message.error(`创建失败-${err.response.data}`)
           })
@@ -95,9 +107,22 @@ export default {
     // 根据index返回字母
     returnLetter (index) {
       return String.fromCharCode(index + 65)
+    },
+    // 获取当前日期
+    getDate () {
+      const date = new Date()
+      const year = date.getFullYear()
+      let month = date.getMonth()
+      if (month < 10) {
+        month = `0${month}`
+      }
+      return `${year}-${month}`
     }
   },
   mounted () {
+
+  },
+  computed: {
 
   }
 

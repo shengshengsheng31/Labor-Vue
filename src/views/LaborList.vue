@@ -6,11 +6,15 @@
       </div>
       <el-table :data="laborData" style="width: 80%">
         <el-table-column prop="Title" label="标题" width="180"></el-table-column>
-        <el-table-column prop="Goods" label="劳保"></el-table-column>
+        <el-table-column label="劳保">
+          <template slot-scope="scope">
+            <el-tag>{{ scope.row.Goods }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="primary" size="small">GO</el-button>
+            <el-button @click="handleClick(scope.row)" type="primary">GO</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -31,8 +35,7 @@ export default {
       })
     },
     handleClick (row) {
-      this.$router.push({})
-      console.log(row.Title)
+      this.$router.push({ name: 'LaborSelect', params: { Id: row.Id } })
     }
   },
   mounted () {
