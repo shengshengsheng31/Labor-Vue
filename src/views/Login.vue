@@ -6,8 +6,18 @@
         <form action ref="loginForm">
           <img src="@/assets/avator.svg" alt class="avator" />
           <h2>Welcome</h2>
-          <login-input @inputContent="getAccount" iconType="icon iconfont icon-usercenter" inputTitle="Account"/>
-          <login-input inputType="password" autocomplete="current-password" iconType="icon iconfont icon-password" inputTitle="Password" @inputContent="getPassword"/>
+          <login-input
+            @inputContent="getAccount"
+            iconType="icon iconfont icon-usercenter"
+            inputTitle="Account"
+          />
+          <login-input
+            inputType="password"
+            autocomplete="current-password"
+            iconType="icon iconfont icon-password"
+            inputTitle="Password"
+            @inputContent="getPassword"
+          />
           <a href="#">Forget Password</a>
           <input type="submit" class="btn" value="Login" @click.prevent="login" />
         </form>
@@ -48,7 +58,7 @@ export default {
       await this.$http.post('api/user/login', this.user).then(res => {
         this.$message.success('登录成功')
         window.sessionStorage.setItem('token', res.data)
-        this.$router.push('/home')
+        this.$router.push({ path: '/home', query: { userName: this.user.Account } })
       }).catch(err => {
         this.$message.error(`登录失败-${err.toString()}`)
       })

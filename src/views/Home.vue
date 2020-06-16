@@ -7,7 +7,10 @@
           <h3>劳保系统</h3>
         </div>
         <div>
-          <el-link type="info">{{userName}}<i class="el-icon-edit"></i></el-link>
+          <el-link type="info">
+            {{userName}}
+            <i class="el-icon-edit"></i>
+          </el-link>
           <el-button @click="quit">退出</el-button>
         </div>
       </el-header>
@@ -47,11 +50,10 @@
 export default {
   data () {
     return {
-      userName: '用户名'
+      userName: this.$route.query.userName
     }
   },
   mounted () {
-
   },
   methods: {
     handleOpen () {

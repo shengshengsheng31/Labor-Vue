@@ -5,12 +5,12 @@
         <span>劳保列表</span>
       </div>
       <el-table :data="laborData" style="width: 80%">
-        <el-table-column prop="Title" label="标题" width="180"></el-table-column>
-        <el-table-column label="劳保">
+        <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.Goods }}</el-tag>
+            <el-tag v-for="(item,index) in scope.row.Goods.split(';')" :key="index">{{ item}}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="Title" label="标题" width="180"></el-table-column>
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
@@ -43,4 +43,8 @@ export default {
   }
 }
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.el-tag {
+  margin: 0.3rem 1rem;
+}
+</style>
