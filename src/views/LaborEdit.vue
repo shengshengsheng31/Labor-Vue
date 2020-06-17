@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>创建劳保</span>
+        <span>{{pageTitle}}</span>
       </div>
       <el-form :model="laborForm" ref="laborForm" label-width="100px">
         <el-form-item prop="title" label="标题" :rules="laborFormRule.titleRule">
@@ -51,8 +51,12 @@ export default {
         Title: '',
         Options: '',
         Goods: ''
-      }
+      },
+      pageTitle: ''
     }
+  },
+  mounted () {
+    this.pageTitle = this.$route.query.Title
   },
   methods: {
     // 提交
@@ -112,9 +116,7 @@ export default {
       return `${year}-${month}`
     }
   },
-  mounted () {
 
-  },
   computed: {
 
   }

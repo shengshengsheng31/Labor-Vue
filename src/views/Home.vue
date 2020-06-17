@@ -21,6 +21,7 @@
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
+            @select="reload"
             router
           >
             <el-menu-item index="/LaborSelect">
@@ -36,7 +37,7 @@
                 <i class="el-icon-tickets"></i>
                 <span slot="title">劳保列表</span>
               </el-menu-item>
-              <el-menu-item index="/LaborCreate">
+              <el-menu-item index="/LaborEdit">
                 <i class="el-icon-edit-outline"></i>
                 <span slot="title">创建劳保</span>
               </el-menu-item>
@@ -73,6 +74,12 @@ export default {
     quit () {
       window.sessionStorage.clear()
       this.$router.push('/login')
+    },
+    refresh (path) {
+      this.$router.push({ path: path, query: '432' })
+    },
+    reload () {
+      this.$router.go(0)
     }
   }
 }

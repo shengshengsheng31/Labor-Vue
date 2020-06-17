@@ -15,7 +15,7 @@
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="primary" size="mini">导出</el-button>
-            <el-button @click="handleClick(scope.row)" type="warning" size="mini">修改</el-button>
+            <el-button @click="updateLabor(scope.row)" type="warning" size="mini">修改</el-button>
             <el-button @click="deleteLabor(scope.row)" type="danger" size="mini">删除</el-button>
           </template>
         </el-table-column>
@@ -32,7 +32,7 @@
     </el-card>
     <!--提示框-->
     <el-dialog title="警告" :visible.sync="deleteDialogVisible" width="30%">
-      <span>是否确认删除劳保：{{currentData.title}}</span>
+      <span>是否确认删除劳保：{{currentData.Title}}</span>
       <span slot="footer">
         <el-button @click="deleteDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmDelete">确 定</el-button>
@@ -76,7 +76,6 @@ export default {
     // 删除按钮激发删除对话框
     deleteLabor (row) {
       this.currentData = row
-      console.log(this.currentData)
       this.deleteDialogVisible = true
     },
     // 确认删除劳保
@@ -88,6 +87,10 @@ export default {
         this.$message.error(`删除失败${err.response.data.title}`)
       })
       this.deleteDialogVisible = false
+    },
+    // 修改按钮跳转到修改
+    updateLabor (row) {
+      this.$router.push({ path: '/LaborEdit', query: row })
     }
   },
   mounted () {

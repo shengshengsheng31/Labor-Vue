@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Test from '../components/LoginInput.vue'
-import LaborCreate from '../views/LaborCreate.vue'
+import LaborEdit from '../views/LaborEdit.vue'
 import LaborSelect from '../views/LaborSelect.vue'
 import LaborList from '../views/LaborList.vue'
 import Home from '../views/Home.vue'
@@ -25,7 +25,7 @@ const routes = [
     component: Home,
     children: [
       { path: '/LaborList', component: LaborList },
-      { path: '/LaborCreate', component: LaborCreate },
+      { path: '/LaborEdit', component: LaborEdit },
       { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' }]
   },
   { path: '/login', component: Login },
