@@ -58,9 +58,9 @@ export default {
       await this.$http.post('api/user/login', this.user).then(res => {
         this.$message.success('登录成功')
         window.sessionStorage.setItem('token', res.data)
-        this.$router.push({ path: '/home', query: { userName: this.user.Account } })
+        this.$router.push({ path: '/home' })
       }).catch(err => {
-        this.$message.error(`登录失败-${err.toString()}`)
+        this.$message.error(`登录失败-${err.response.data}`)
       })
     },
     getAccount (data) {

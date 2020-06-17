@@ -56,10 +56,12 @@
 export default {
   data () {
     return {
-      userName: this.$route.query.userName
+      userName: ''
     }
   },
   mounted () {
+    const token = decodeURIComponent(escape(window.atob(window.sessionStorage.getItem('token').split('.')[1])))
+    this.userName = JSON.parse(token).Account
   },
   methods: {
     handleOpen () {
