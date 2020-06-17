@@ -35,23 +35,16 @@
 <script>
 export default {
   data () {
-    var checkOption = (rule, value, callback) => {
-      if (value.match(/;/)) { return callback(new Error('不能在文字中包含英文的“;”')) }
-    }
     return {
       // 表单数据
       laborForm: {
-        // title: `${new Date().getFullYear()}-${new Date().getMonth()}`,
         title: this.getDate(),
         options: [{ goods: '', option: 'A' }, { goods: '', option: 'B' }, { goods: '', option: 'C' }]
       },
       // 表单规则
       laborFormRule: {
         titleRule: { required: true, message: '输入标题', trigger: 'blur' },
-        optionRule: [
-          { required: true, message: '劳保不能为空', trigger: 'blur' },
-          { validator: checkOption, trigger: 'blur' }
-        ]
+        optionRule: [{ required: true, message: '劳保不能为空', trigger: 'blur' }]
       },
       // 提交到数据库的数据
       labor: {

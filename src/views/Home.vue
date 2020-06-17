@@ -23,18 +23,24 @@
             @close="handleClose"
             router
           >
-            <el-menu-item index="/LaborList">
-              <i class="el-icon-tickets"></i>
-              <span slot="title">劳保列表</span>
-            </el-menu-item>
-            <el-menu-item index="/LaborCreate">
-              <i class="el-icon-edit-outline"></i>
-              <span slot="title">创建劳保</span>
-            </el-menu-item>
             <el-menu-item index="/LaborSelect">
               <i class="el-icon-present"></i>
               <span slot="title">本期劳保</span>
             </el-menu-item>
+            <el-submenu index="manage">
+              <template slot="title">
+                <i class="el-icon-paperclip"></i>
+                <span>劳保管理</span>
+              </template>
+              <el-menu-item index="/LaborList">
+                <i class="el-icon-tickets"></i>
+                <span slot="title">劳保列表</span>
+              </el-menu-item>
+              <el-menu-item index="/LaborCreate">
+                <i class="el-icon-edit-outline"></i>
+                <span slot="title">创建劳保</span>
+              </el-menu-item>
+            </el-submenu>
           </el-menu>
         </el-aside>
 
