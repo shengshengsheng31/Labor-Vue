@@ -46,7 +46,7 @@
         </el-aside>
 
         <el-main>
-          <router-view />
+          <router-view v-if="isRouterAlive" />
         </el-main>
       </el-container>
     </el-container>
@@ -57,7 +57,8 @@
 export default {
   data () {
     return {
-      userName: ''
+      userName: '',
+      isRouterAlive: true
     }
   },
   mounted () {
@@ -75,12 +76,14 @@ export default {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
-    refresh (path) {
-      this.$router.push({ path: path, query: '432' })
-    },
+    // 刷新
     reload () {
-      this.$router.go(0)
+      this.isRouterAlive = false // 先关闭，
+      this.$nextTick(function () {
+        this.isRouterAlive = true // 再打开
+      })
     }
+
   }
 }
 </script>

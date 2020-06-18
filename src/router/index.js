@@ -6,6 +6,7 @@ import LaborEdit from '../views/LaborEdit.vue'
 import LaborSelect from '../views/LaborSelect.vue'
 import LaborList from '../views/LaborList.vue'
 import Home from '../views/Home.vue'
+import DetailList from '../views/DetailList.vue'
 
 Vue.use(VueRouter)
 
@@ -26,7 +27,10 @@ const routes = [
     children: [
       { path: '/LaborList', component: LaborList },
       { path: '/LaborEdit', component: LaborEdit },
-      { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' }]
+      { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' },
+      { path: '/DetailList', component: DetailList, name: 'DetailList' }
+    ]
+
   },
   { path: '/login', component: Login },
   { path: '/test', component: Test }

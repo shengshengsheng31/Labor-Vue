@@ -6,7 +6,7 @@
       </div>
       <el-form :model="laborForm" ref="laborForm" label-width="100px">
         <el-form-item prop="title" label="标题" :rules="laborFormRule.titleRule">
-          <el-input v-model="laborForm.title"></el-input>
+          <el-input v-model="laborForm.title" :disabled="titleDisabled"></el-input>
         </el-form-item>
         <el-form-item
           v-for="(item, index) in laborForm.options"
@@ -26,7 +26,7 @@
         <el-form-item>
           <el-button type="primary" @click="submitForm('laborForm')">提交</el-button>
           <el-button @click="addOption">新增劳保</el-button>
-          <el-button @click="resetForm('laborForm')">重置</el-button>
+          <el-button @click="resetForm('laborForm')" :disabled="resetDisabled">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -38,7 +38,7 @@ export default {
     return {
       // 表单数据
       laborForm: {
-        title: this.getDate(),
+        title: '',
         options: [{ goods: '', option: 'A' }, { goods: '', option: 'B' }, { goods: '', option: 'C' }]
       },
       // 表单规则
@@ -52,13 +52,34 @@ export default {
         Options: '',
         Goods: ''
       },
-      pageTitle: ''
+      pageTitle: '321',
+      titleDisabled: false,
+      resetDisabled: false
     }
   },
   mounted () {
-    this.pageTitle = this.$route.query.Title
+    this.initForm()
   },
   methods: {
+    // 初始化表单判读是新增还是修改
+    initForm () {
+      // 新增
+      if (this.$route.query.Title === undefined) {
+        this.pageTitle = '创建劳保'
+        this.laborForm.title = this.getDate()
+      } else {
+        // 修改
+        this.titleDisabled = true
+        this.resetDisabled = true
+        const query = this.$route.query
+        this.pageTitle = '修改劳保'
+        this.laborForm.title = query.Title
+        this.laborForm.options = []
+        query.Goods.split(';').forEach((item, index) => {
+          this.laborForm.options.push({ goods: item, option: query.Options.split(';')[index] })
+        })
+      }
+    },
     // 提交
     submitForm (formName) {
       this.$refs[formName].validate(async (valid) => {
@@ -72,12 +93,23 @@ export default {
           })
           this.labor.Goods = goodslist.join(';')
           this.labor.Options = optioins.join(';')
-          await this.$http.post('api/LaborHead/CreateLaborHead', this.labor).then(res => {
-            this.$message.success('创建成功')
-            this.$router.push('/LaborList')
-          }).catch(err => {
-            this.$message.error(`创建失败-${err.response.data}`)
-          })
+
+          if (this.pageTitle === '创建劳保') {
+            await this.$http.post('api/LaborHead/CreateLaborHead', this.labor).then(res => {
+              this.$message.success('创建成功')
+              this.$router.push('/LaborList')
+            }).catch(err => {
+              this.$message.error(`创建失败-${err.response.data}`)
+            })
+          } else {
+            console.log(Object.assign(this.labor, { Id: this.$route.query.Id }))
+            await this.$http.post('api/LaborHead/UpdateLaborHead', Object.assign(this.labor, { Id: this.$route.query.Id })).then(res => {
+              this.$message.success('修改成功')
+              this.$router.push('/LaborList')
+            }).catch(err => {
+              this.$message.error(`修改失败-${err.response.data}`)
+            })
+          }
         } else {
           return false
         }
