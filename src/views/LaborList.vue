@@ -10,7 +10,11 @@
             <el-tag v-for="(item,index) in scope.row.Goods.split(';')" :key="index">{{ item}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="Title" label="标题" width="180"></el-table-column>
+        <el-table-column prop="Title" label="标题" width="180">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="toDetail(scope.row)">{{scope.row.Title}}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
@@ -91,6 +95,11 @@ export default {
     // 修改按钮跳转到修改
     updateLabor (row) {
       this.$router.push({ path: '/LaborEdit', query: row })
+    },
+    // 跳转到详情
+    toDetail (row) {
+      console.log(row)
+      this.$router.push({ path: '/DetailList', query: row })
     }
   },
   mounted () {
