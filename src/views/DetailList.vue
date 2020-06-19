@@ -53,8 +53,26 @@ export default {
         this.$message.error(`获取数据失败-${err.response.data}`)
       })
     },
-    exlExport () {
-
+    // 导出
+    async exlExport () {
+      await this.$http.get('api/LaborDetail/ExportLabor', { params: { LaborId: this.laborId, Title: this.pageTitle }, responseType: 'blob' }).then(res => {
+        const blob = new Blob([res.data])// 构造一个blob对象来处理数据
+        const fileName = `${this.pageTitle}-${Date.now()}.xlsx`
+        if ('download' in document.createElement('a')) { // 支持a标签download的浏览器
+          const link = document.createElement('a')// 创建a标签
+          link.download = fileName// a标签添加属性
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob)
+          document.body.appendChild(link)
+          link.click()// 执行下载
+          URL.revokeObjectURL(link.href) // 释放url
+          document.body.removeChild(link)// 释放标签
+        } else { // IE浏览器
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch(err => {
+        this.$message.error(`下载失败${err.toString()}`)
+      })
     }
   }
 }

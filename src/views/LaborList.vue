@@ -18,7 +18,7 @@
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="primary" size="mini">导出</el-button>
+            <el-button @click="exlExport(scope.row)" type="primary" size="mini">导出</el-button>
             <el-button @click="updateLabor(scope.row)" type="warning" size="mini">修改</el-button>
             <el-button @click="deleteLabor(scope.row)" type="danger" size="mini">删除</el-button>
           </template>
@@ -100,6 +100,28 @@ export default {
     toDetail (row) {
       console.log(row)
       this.$router.push({ path: '/DetailList', query: row })
+    },
+    // 导出
+    async exlExport (row) {
+      console.log(row)
+      await this.$http.get('api/LaborDetail/ExportLabor', { params: { LaborId: row.Id, Title: row.Title }, responseType: 'blob' }).then(res => {
+        const blob = new Blob([res.data])// 构造一个blob对象来处理数据
+        const fileName = `${row.Title}-${Date.now()}.xlsx`
+        if ('download' in document.createElement('a')) { // 支持a标签download的浏览器
+          const link = document.createElement('a')// 创建a标签
+          link.download = fileName// a标签添加属性
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob)
+          document.body.appendChild(link)
+          link.click()// 执行下载
+          URL.revokeObjectURL(link.href) // 释放url
+          document.body.removeChild(link)// 释放标签
+        } else { // IE浏览器
+          navigator.msSaveBlob(blob, fileName)
+        }
+      }).catch(err => {
+        this.$message.error(`下载失败${err.toString()}`)
+      })
     }
   },
   mounted () {
