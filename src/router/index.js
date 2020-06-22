@@ -7,6 +7,10 @@ import LaborSelect from '../views/LaborSelect.vue'
 import LaborList from '../views/LaborList.vue'
 import Home from '../views/Home.vue'
 import DetailList from '../views/DetailList.vue'
+import RegisterUser from '../views/RegisterUser.vue'
+import CreateDepartment from '../views/CreateDepartment.vue'
+import DepartmentList from '../views/DepartmentList.vue'
+import UserList from '../views/UserList.vue'
 
 Vue.use(VueRouter)
 
@@ -19,7 +23,7 @@ VueRouter.prototype.push = function push (location) {
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/home'
   },
   {
     path: '/home',
@@ -28,7 +32,11 @@ const routes = [
       { path: '/LaborList', component: LaborList },
       { path: '/LaborEdit', component: LaborEdit },
       { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' },
-      { path: '/DetailList', component: DetailList, name: 'DetailList' }
+      { path: '/DetailList', component: DetailList, name: 'DetailList' },
+      { path: '/RegisterUser', component: RegisterUser, name: 'RegisterUser' },
+      { path: '/CreateDepartment', component: CreateDepartment, name: 'CreateDepartment' },
+      { path: '/DepartmentList', component: DepartmentList, name: 'DepartmentList' },
+      { path: '/UserList', component: UserList, name: 'UserList' }
     ]
 
   },
@@ -42,11 +50,11 @@ const router = new VueRouter({
 })
 
 // 路由导航守卫
-router.beforeEach((to, from, next) => {
-  if (to.path === '/login') return next()
-  const tokenStr = window.sessionStorage.getItem('token')
-  if (!tokenStr) return next('/login')
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/login') return next()
+//   const tokenStr = window.sessionStorage.getItem('token')
+//   if (!tokenStr) return next('/login')
+//   next()
+// })
 
 export default router

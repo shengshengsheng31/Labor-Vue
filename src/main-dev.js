@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueJsonp from 'vue-jsonp'
 import './plugins/element.js'
 // 全局样式表
 import './assets/css/global.css'
@@ -18,6 +19,8 @@ axios.interceptors.request.use(config => {
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
+
+Vue.use(VueJsonp)
 
 new Vue({
   router,

@@ -28,7 +28,7 @@
               <i class="el-icon-present"></i>
               <span slot="title">本期劳保</span>
             </el-menu-item>
-            <el-submenu index="manage">
+            <el-submenu index="manageLabor">
               <template slot="title">
                 <i class="el-icon-paperclip"></i>
                 <span>劳保管理</span>
@@ -40,6 +40,34 @@
               <el-menu-item index="/LaborEdit">
                 <i class="el-icon-edit-outline"></i>
                 <span slot="title">创建劳保</span>
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="manageUser">
+              <template slot="title">
+                <i class="el-icon-thumb"></i>
+                <span>人员管理</span>
+              </template>
+              <el-menu-item index="/UserList">
+                <i class="el-icon-link"></i>
+                <span slot="title">人员列表</span>
+              </el-menu-item>
+              <el-menu-item index="/RegisterUser">
+                <i class="el-icon-files"></i>
+                <span slot="title">人员注册</span>
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="manageDept">
+              <template slot="title">
+                <i class="el-icon-data-analysis"></i>
+                <span>部门管理</span>
+              </template>
+              <el-menu-item index="/CreateDepartment">
+                <i class="el-icon-magic-stick"></i>
+                <span slot="title">创建部门</span>
+              </el-menu-item>
+              <el-menu-item index="/DepartmentList">
+                <i class="el-icon-notebook-1"></i>
+                <span slot="title">部门列表</span>
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -62,8 +90,8 @@ export default {
     }
   },
   mounted () {
-    const token = decodeURIComponent(escape(window.atob(window.sessionStorage.getItem('token').split('.')[1])))
-    this.userName = JSON.parse(token).Account
+    this.login()
+    this.userName = '123'
   },
   methods: {
     handleOpen () {
@@ -81,6 +109,17 @@ export default {
       this.isRouterAlive = false // 先关闭，
       this.$nextTick(function () {
         this.isRouterAlive = true // 再打开
+      })
+    },
+    // 域账号登录
+    login () {
+      this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
+        window.sessionStorage.setItem('token', res)
+        const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
+        this.userName = tokenParse.UserName
+        // this.$router.push('/LaborSelect')
+      }).catch(err => {
+        this.$message.error(`检查用户-${err}`)
       })
     }
 
