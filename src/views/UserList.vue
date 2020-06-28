@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
-            <el-button @click="updateUser(scope.row)" type="warning" size="mini" v-if="tokenParse.UserRole!=='admin'">修改权限</el-button>
+            <el-button @click="updateUser(scope.row)" type="warning" size="mini" >修改权限</el-button>
             <el-button @click="deleteUser(scope.row)" type="danger" size="mini">删除</el-button>
           </template>
         </el-table-column>
