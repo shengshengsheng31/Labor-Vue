@@ -63,7 +63,9 @@ export default {
     // },
     // 域账号登录
     login () {
-      this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
+      // this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
+      // this.$jsonp('http://152.136.139.149:8091/api/User/Login').then(res => {
+      this.$jsonp('http://10.10.42.81:8090/api/User/Login').then(res => {
         window.sessionStorage.setItem('token', res)
         const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
         this.$message.success(`欢迎-${tokenParse.UserName}`)

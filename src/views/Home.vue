@@ -94,6 +94,7 @@ export default {
   mounted () {
     this.roleRight()
     this.userName = this.tokenParse.UserName
+    this.$router.push('/LaborSelect')
   },
   methods: {
     handleOpen () {
