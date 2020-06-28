@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container"  v-loading="loading">
     <img src="@/assets/login-bg.png" alt class="wave" />
     <div class="container">
       <div class="login-box">
@@ -36,7 +36,8 @@ export default {
       user: {
         Account: '',
         Password: ''
-      }
+      },
+      loading: true
     }
   },
   mounted () {
@@ -44,23 +45,35 @@ export default {
       this.$refs.loginForm.childNodes[2].classList.add('exist')
       this.$refs.loginForm.childNodes[3].classList.add('exist')
     }
+    this.login()
   },
   methods: {
-    async login (event) {
-      if (this.user.Account.trim() === '') {
-        this.$message.error('请输入账号')
-        return
-      }
-      if (this.user.Password.trim() === '') {
-        this.$message.error('请输入密码')
-        return
-      }
-      await this.$http.post('api/user/login', this.user).then(res => {
-        this.$message.success('登录成功')
-        window.sessionStorage.setItem('token', res.data)
-        this.$router.push({ path: '/home' })
+    // async login (event) {
+    //   if (this.user.Account.trim() === '') {
+    //     this.$message.error('请输入账号')
+    //     return
+    //   }
+    //   if (this.user.Password.trim() === '') {
+    //     this.$message.error('请输入密码')
+    //     return
+    //   }
+    //   await this.$http.post('api/user/login', this.user).then(res => {
+    //     this.$message.success('登录成功')
+    //     window.sessionStorage.setItem('token', res.data)
+    //     this.$router.push({ path: '/home' })
+    //   }).catch(err => {
+    //     this.$message.error(`登录失败-${err.response.data}`)
+    //   })
+    // },
+    // 域账号登录
+    login () {
+      this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
+        window.sessionStorage.setItem('token', res)
+        const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
+        this.$message.success(`欢迎-${tokenParse.UserName}`)
+        this.$router.push('/home')
       }).catch(err => {
-        this.$message.error(`登录失败-${err.response.data}`)
+        this.$message.error(`检查用户-${err}`)
       })
     },
     getAccount (data) {

@@ -11,7 +11,7 @@
             {{userName}}
             <i class="el-icon-edit"></i>
           </el-link>
-          <el-button @click="quit">退出</el-button>
+          <!-- <el-button @click="quit">退出</el-button>-->
         </div>
       </el-header>
       <el-container>
@@ -23,12 +23,13 @@
             @close="handleClose"
             @select="reload"
             router
+            unique-opened
           >
             <el-menu-item index="/LaborSelect">
               <i class="el-icon-present"></i>
               <span slot="title">本期劳保</span>
             </el-menu-item>
-            <el-submenu index="manageLabor">
+            <el-submenu index="manageLabor" v-if="tokenParse.UserRole!=='staff'">
               <template slot="title">
                 <i class="el-icon-paperclip"></i>
                 <span>劳保管理</span>
@@ -37,12 +38,12 @@
                 <i class="el-icon-tickets"></i>
                 <span slot="title">劳保列表</span>
               </el-menu-item>
-              <el-menu-item index="/LaborEdit">
+              <el-menu-item index="/LaborEdit" v-if="tokenParse.UserRole==='admin'">
                 <i class="el-icon-edit-outline"></i>
                 <span slot="title">创建劳保</span>
               </el-menu-item>
             </el-submenu>
-            <el-submenu index="manageUser">
+            <el-submenu index="manageUser" v-if="tokenParse.UserRole!=='staff'">
               <template slot="title">
                 <i class="el-icon-thumb"></i>
                 <span>人员管理</span>
@@ -56,7 +57,7 @@
                 <span slot="title">人员注册</span>
               </el-menu-item>
             </el-submenu>
-            <el-submenu index="manageDept">
+            <el-submenu index="manageDept" v-if="tokenParse.UserRole==='admin'">
               <template slot="title">
                 <i class="el-icon-data-analysis"></i>
                 <span>部门管理</span>
@@ -86,12 +87,13 @@ export default {
   data () {
     return {
       userName: '',
-      isRouterAlive: true
+      isRouterAlive: true,
+      tokenParse: JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
     }
   },
   mounted () {
-    this.login()
-    this.userName = '服务器未连接'
+    this.roleRight()
+    this.userName = this.tokenParse.UserName
   },
   methods: {
     handleOpen () {
@@ -111,16 +113,9 @@ export default {
         this.isRouterAlive = true // 再打开
       })
     },
-    // 域账号登录
-    login () {
-      this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
-        window.sessionStorage.setItem('token', res)
-        const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
-        this.userName = tokenParse.UserName
-        // this.$router.push('/LaborSelect')
-      }).catch(err => {
-        this.$message.error(`检查用户-${err}`)
-      })
+    // 判断权限
+    roleRight () {
+      console.log(this.tokenParse.UserRole)
     }
 
   }
