@@ -41,10 +41,6 @@ export default {
     }
   },
   mounted () {
-    if (this.user.Account !== '') {
-      this.$refs.loginForm.childNodes[2].classList.add('exist')
-      this.$refs.loginForm.childNodes[3].classList.add('exist')
-    }
     this.login()
   },
   methods: {
@@ -68,6 +64,7 @@ export default {
     // 域账号登录
     login () {
       this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
+        console.log(res)
         window.sessionStorage.setItem('token', res)
         const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
         this.$message.success(`欢迎-${tokenParse.UserName}`)
