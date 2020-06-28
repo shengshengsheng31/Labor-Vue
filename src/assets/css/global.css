@@ -11,3 +11,6 @@ body {
   font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif, "宋体";
 }
 
+.el-pagination {
+  margin-top: 1rem;
+}

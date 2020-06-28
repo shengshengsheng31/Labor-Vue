@@ -91,7 +91,7 @@ export default {
   },
   mounted () {
     this.login()
-    this.userName = '123'
+    this.userName = '服务器未连接'
   },
   methods: {
     handleOpen () {

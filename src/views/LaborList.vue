@@ -134,7 +134,4 @@ export default {
   margin: 0.3rem 1rem;
 }
 
-.el-pagination {
-  margin-top: 1rem;
-}
 </style>
