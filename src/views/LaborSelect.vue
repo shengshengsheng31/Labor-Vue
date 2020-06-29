@@ -22,6 +22,8 @@
   </div>
 </template>
 <script>
+import jwtDecode from 'jwt-decode'
+
 export default {
   data () {
     return {
@@ -49,8 +51,8 @@ export default {
         this.laborHead = res.data
         this.goodsList = this.laborHead.Goods.split(';')
         this.optionsList = this.laborHead.Options.split(';')
-        const token = decodeURIComponent(escape(window.atob(window.sessionStorage.getItem('token').split('.')[1])))
-        this.createDate.UserId = JSON.parse(token).jti
+        const token = jwtDecode(window.sessionStorage.getItem('token'))
+        this.createDate.UserId = token.jti
         this.createDate.LaborId = this.laborHead.Id
         this.getChoice()
       }).catch(err => {

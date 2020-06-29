@@ -4,13 +4,15 @@ import Login from '../views/Login.vue'
 import Test from '../components/LoginInput.vue'
 import LaborEdit from '../views/LaborEdit.vue'
 import LaborSelect from '../views/LaborSelect.vue'
-import LaborList from '../views/LaborList.vue'
+import LaborManage from '../views/LaborManage.vue'
 import Home from '../views/Home.vue'
 import DetailList from '../views/DetailList.vue'
 import RegisterUser from '../views/RegisterUser.vue'
-import CreateDepartment from '../views/CreateDepartment.vue'
-import DepartmentList from '../views/DepartmentList.vue'
-import UserList from '../views/UserList.vue'
+
+import DepartmentManage from '../views/DepartmentManage.vue'
+import UserManage from '../views/UserManage.vue'
+import RoleManage from '../views/RoleManage.vue'
+import MenuManage from '../views/MenuManage.vue'
 
 Vue.use(VueRouter)
 
@@ -29,14 +31,16 @@ const routes = [
     path: '/home',
     component: Home,
     children: [
-      { path: '/LaborList', component: LaborList },
+      { path: '/LaborManage', component: LaborManage },
       { path: '/LaborEdit', component: LaborEdit },
       { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' },
       { path: '/DetailList', component: DetailList, name: 'DetailList' },
       { path: '/RegisterUser', component: RegisterUser, name: 'RegisterUser' },
-      { path: '/CreateDepartment', component: CreateDepartment, name: 'CreateDepartment' },
-      { path: '/DepartmentList', component: DepartmentList, name: 'DepartmentList' },
-      { path: '/UserList', component: UserList, name: 'UserList' }
+
+      { path: '/DepartmentManage', component: DepartmentManage, name: 'DepartmentManage' },
+      { path: '/UserManage', component: UserManage, name: 'UserManage' },
+      { path: '/RoleManage', component: RoleManage, name: 'RoleManage' },
+      { path: '/MenuManage', component: MenuManage, name: 'MenuManage' }
     ]
 
   },

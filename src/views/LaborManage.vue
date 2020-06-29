@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>劳保列表</span>
+        <el-button type="primary" @click="toAddLabor">创建劳保</el-button>
       </div>
       <el-table :data="laborData" style="width: 80%">
         <el-table-column type="expand">
@@ -16,10 +16,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="300">
+        <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="exlExport(scope.row)" type="primary" size="mini">导出</el-button>
-            <el-button @click="updateLabor(scope.row)" type="warning" size="mini">修改</el-button>
             <el-button @click="deleteLabor(scope.row)" type="danger" size="mini">删除</el-button>
           </template>
         </el-table-column>
@@ -34,9 +33,11 @@
         :total="total"
       ></el-pagination>
     </el-card>
-    <!--提示框-->
+    <!--删除提示框-->
     <el-dialog title="警告" :visible.sync="deleteDialogVisible" width="30%">
       <span>是否确认删除劳保：{{currentData.Title}}</span>
+      <br />
+      <span class="attention">注意：将一并删除该劳保下所有人的选项</span>
       <span slot="footer">
         <el-button @click="deleteDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmDelete">确 定</el-button>
@@ -45,6 +46,7 @@
   </div>
 </template>
 <script>
+
 export default {
   data () {
     return {
@@ -98,12 +100,10 @@ export default {
     },
     // 跳转到详情
     toDetail (row) {
-      console.log(row)
       this.$router.push({ path: '/DetailList', query: row })
     },
     // 导出
     async exlExport (row) {
-      console.log(row)
       await this.$http.get('api/LaborDetail/ExportLabor', { params: { LaborId: row.Id, Title: row.Title }, responseType: 'blob' }).then(res => {
         const blob = new Blob([res.data])// 构造一个blob对象来处理数据
         const fileName = `${row.Title}-${Date.now()}.xlsx`
@@ -122,7 +122,12 @@ export default {
       }).catch(err => {
         this.$message.error(`下载失败${err.toString()}`)
       })
+    },
+    // 跳转到创建劳保
+    toAddLabor () {
+      this.$router.push({ path: '/LaborEdit' })
     }
+
   },
   mounted () {
     this.getData()
@@ -133,5 +138,4 @@ export default {
 .el-tag {
   margin: 0.3rem 1rem;
 }
-
 </style>

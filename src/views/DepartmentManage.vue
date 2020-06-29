@@ -2,7 +2,9 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>部门列表</span>
+        <span>部门：</span>
+        <el-input v-model="deptName" placeholder="请输入内容"></el-input>
+        <el-button type="primary" @click="addDept" :disabled="addDisabled">添加</el-button>
       </div>
       <el-table :data="deptData" style="width: 100%">
         <el-table-column prop="DeptName" label="日期" width="180"></el-table-column>
@@ -26,7 +28,9 @@
       </span>
     </el-dialog>
     <el-dialog title="删除" :visible.sync="deleteDialogVisible" width="30%">
-     <span>确认删除部门：{{deleteDeptForm.DeptName}}</span>
+      <span>确认删除部门：{{deleteDeptForm.DeptName}}</span>
+      <br />
+      <span class="attention">注意：属于该部门的人员将被一并删除</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deleteDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="deleteConfirm">确 定</el-button>
@@ -45,7 +49,9 @@ export default {
       updateDeptForm: { DeptName: '', Id: '' },
       deleteDeptForm: { DeptName: '', Id: '' },
       updateDialogVisible: false,
-      deleteDialogVisible: false
+      deleteDialogVisible: false,
+      deptName: '',
+      addDisabled: true
     }
   },
   mounted () {
@@ -57,7 +63,7 @@ export default {
       this.$http.get('api/Department/GetAllDepartment').then(res => {
         this.deptData = res.data
       }).catch(err => {
-        console.log(err)
+        this.$message.error(err.response.data)
       })
     },
     // 显示修改对话框
@@ -93,8 +99,29 @@ export default {
         this.$message.error(`删除失败-${err.response.data}`)
         this.deleteDialogVisible = false
       })
+    },
+    // 添加部门
+    addDept () {
+      this.$http.post('api/Department/CreateDept', { DeptName: this.deptName }).then(res => {
+        this.$message.success(`${this.deptName}创建成功`)
+        this.getAllDept()
+      }).catch(err => {
+        this.$message.error(`创建失败-${err.response.data}`)
+      })
+    }
+  },
+  watch: {
+    deptName (val) {
+      if (val === '') { this.addDisabled = true } else {
+        this.addDisabled = false
+      }
     }
   }
 }
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.el-input {
+  width: 20rem;
+  margin: 0 3rem;
+}
+</style>

@@ -29,6 +29,7 @@
 
 <script>
 import LoginInput from '@/components/LoginInput.vue'
+import jwtDecode from 'jwt-decode'
 export default {
   components: { LoginInput },
   data () {
@@ -67,7 +68,8 @@ export default {
       // this.$jsonp('http://152.136.139.149:8091/api/User/Login').then(res => {
       // this.$jsonp('http://10.10.42.81:8090/api/User/Login').then(res => {
         window.sessionStorage.setItem('token', res)
-        const tokenParse = JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1]))))
+        const tokenParse = jwtDecode(window.sessionStorage.token)
+        console.log(tokenParse)
         this.$message.success(`欢迎-${tokenParse.UserName}`)
         this.$router.push('/home')
       }).catch(err => {

@@ -97,7 +97,7 @@ export default {
           if (this.pageTitle === '创建劳保') {
             await this.$http.post('api/LaborHead/CreateLaborHead', this.labor).then(res => {
               this.$message.success('创建成功')
-              this.$router.push('/LaborList')
+              this.$router.push('/LaborManage')
             }).catch(err => {
               this.$message.error(`创建失败-${err.response.data}`)
             })
@@ -105,7 +105,7 @@ export default {
             console.log(Object.assign(this.labor, { Id: this.$route.query.Id }))
             await this.$http.post('api/LaborHead/UpdateLaborHead', Object.assign(this.labor, { Id: this.$route.query.Id })).then(res => {
               this.$message.success('修改成功')
-              this.$router.push('/LaborList')
+              this.$router.push('/LaborManage')
             }).catch(err => {
               this.$message.error(`修改失败-${err.response.data}`)
             })

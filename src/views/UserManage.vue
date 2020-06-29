@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>用户列表</span>
+        <el-button type="primary" @click="toRegister">新增人员</el-button>
         <div class="deptBox">
           <span>部门：</span>
           <el-select v-model="deptId" placeholder="请选择" @change="deptChange">
@@ -70,10 +70,11 @@
   </div>
 </template>
 <script>
+import jwtDecode from 'jwt-decode'
 export default {
   data () {
     return {
-      tokenParse: JSON.parse(decodeURIComponent(escape(window.atob(window.sessionStorage.token.split('.')[1])))),
+      tokenParse: jwtDecode(window.sessionStorage.token),
       userData: [{
         UserName: '',
         EmpNo: 0,
@@ -178,6 +179,10 @@ export default {
     // 选择权限
     roleSelect (option) {
       this.role = option
+    },
+    // 跳转到新增人员
+    toRegister () {
+      this.$router.push({ path: '/RegisterUser' })
     }
 
   }
