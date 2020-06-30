@@ -34,6 +34,15 @@
           </template>
         </el-table-column>
       </el-table>
+       <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="PageNumber"
+        :page-sizes="[5, 10, 20, 30]"
+        :page-size="PageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
   </div>
 </template>
@@ -52,7 +61,10 @@ export default {
       DeptId: '',
       departments: [],
       btnLoading: false,
-      selectDisabled: false
+      selectDisabled: false,
+      PageNumber: 1,
+      PageSize: 10,
+      total: 0
     }
   },
   mounted () {
@@ -75,11 +87,12 @@ export default {
       })
     },
     // 获取数据
-    async getData () {
+    getData () {
       const query = this.$route.query
       this.laborId = query.Id
       this.pageTitle = query.Title
-      await this.$http.get('api/LaborDetail/GetLaborDetailByHead', { params: { LaborId: this.laborId, DeptId: this.DeptId } }).then(res => {
+      this.finishCount = 0
+      this.$http.get('api/LaborDetail/GetLaborDetailByHeadPage', { params: { LaborId: this.laborId, DeptId: this.DeptId, PageNumber: this.PageNumber, PageSize: this.PageSize } }).then(res => {
         for (const i in res.data) {
           if (res.data[i].Goods === null) {
             Object.assign(res.data[i], { Finish: '未完成' })
@@ -88,7 +101,9 @@ export default {
             this.finishCount += 1
           }
         }
-        this.finishTitle = `完成(${this.finishCount}/${res.data.length})`
+        this.total = parseInt(res.headers['pagination-x'])
+        // this.finishTitle = `完成(${this.finishCount}/${res.data.length})`
+        this.finishTitle = '完成'
         this.detailData = res.data
         console.log(this.detailData)
       }).catch(err => {
@@ -129,6 +144,16 @@ export default {
       if (this.tokenParse.Role !== 'admin') {
         this.selectDisabled = true
       }
+    },
+    // 页面容量改变
+    handleSizeChange (newSize) {
+      this.PageSize = newSize
+      this.getData()
+    },
+    // 页码改变
+    handleCurrentChange (newPageNumber) {
+      this.PageNumber = newPageNumber
+      this.getData()
     }
   }
 }

@@ -17,7 +17,7 @@
           >{{`${optionsList[index]}-${item}`}}</el-radio>
         </div>
       </template>
-      <el-button @click="confirmLabor" :disabled="btnConfirmDisable">确定</el-button>
+      <el-button @click="confirmLabor" >确定</el-button>
     </el-card>
   </div>
 </template>
@@ -37,8 +37,7 @@ export default {
         Option: '',
         Goods: ''
       },
-      laborChoice: '',
-      btnConfirmDisable: false
+      laborChoice: ''
     }
   },
   mounted () {
@@ -86,7 +85,6 @@ export default {
           this.createDate.Option = res.data.Option
           this.createDate.Goods = res.data.Goods
           this.choice = `${this.createDate.Option}-${this.createDate.Goods}`
-          this.btnConfirmDisable = true
         }
       }).catch(err => {
         this.$message.error(`获取已选择失败${err.response.data}`)

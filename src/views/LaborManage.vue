@@ -18,9 +18,19 @@
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
-
-            <el-button @click="exlExport(scope.row)" type="primary" size="mini" :loading="btnLoading">导出</el-button>
-            <el-button @click="deleteLabor(scope.row)" type="danger" size="mini" v-if="deleteVisible">删除</el-button>
+            <el-button @click="setDefault(scope.row)" type="warning" size="mini" >设置默认劳保</el-button>
+            <el-button
+              @click="exlExport(scope.row)"
+              type="primary"
+              size="mini"
+              :loading="btnLoading"
+            >导出</el-button>
+            <el-button
+              @click="deleteLabor(scope.row)"
+              type="danger"
+              size="mini"
+              v-if="deleteVisible"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,6 +54,24 @@
         <el-button type="primary" @click="confirmDelete">确 定</el-button>
       </span>
     </el-dialog>
+    <!--默认劳保框-->
+    <el-dialog title="设置默认劳保" :visible.sync="defaultDialogVisible" width="30%">
+      <span>默认劳保：</span>
+      <el-select v-model="Option" placeholder="请选择" >
+        <el-option
+          v-for="item in goodsOptions"
+          :key="item.option"
+          :label="item.goods"
+          :value="item.option"
+        ></el-option>
+      </el-select>
+      <br />
+      <span class="attention">将对未进行劳保选择的人进行劳保设置，已选择的劳保仍维持原样</span>
+      <span slot="footer">
+        <el-button @click="defaultDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmSetDefault" :loading="btnDefaultLoading" :disabled="btnDefaultDisabled">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -62,8 +90,19 @@ export default {
       addVisible: true,
       deleteVisible: true,
       btnLoading: false,
-      deptId: '00000000-0000-0000-0000-000000000000'
+      deptId: '00000000-0000-0000-0000-000000000000',
+      defaultDialogVisible: false,
+      Option: '',
+      Goods: '',
+      goodsOptions: [{ goods: '', option: '' }],
+      btnDefaultLoading: false,
+      btnDefaultDisabled: false
+
     }
+  },
+  mounted () {
+    this.getData()
+    this.roleRight()
   },
   methods: {
     // 获取所有数据
@@ -146,13 +185,37 @@ export default {
         this.deleteVisible = false
         this.addVisible = false
       }
+    },
+    // 显示设置默认劳保
+    setDefault (row) {
+      const options = row.Options.split(';')
+      const goods = row.Goods.split(';')
+      this.goodsOptions = []
+      options.forEach((item, index) => {
+        this.goodsOptions.push({ option: item, goods: `${item}-${goods[index]}` })
+      })
+      this.currentData = row
+      this.defaultDialogVisible = true
+      this.Goods = goods[0]
+      this.Option = options[0]
+    },
+    // 确认默认劳保
+    confirmSetDefault () {
+      this.btnDefaultLoading = true
+      this.Goods = this.currentData.Goods.split(';')[this.currentData.Options.split(';').indexOf(this.Option)]
+      this.deptId = this.tokenParse.DeptId
+      this.$http.post('/api/LaborDetail/SetDefaultLabor', { Goods: this.Goods, Option: this.Option, DeptId: this.deptId, LaborId: this.currentData.Id }).then(res => {
+        this.$message.success('设置成功')
+        this.defaultDialogVisible = false
+        this.btnDefaultLoading = false
+      }).catch(err => {
+        this.$message.error(`设置失败-${err.response.data}`)
+        this.defaultDialogVisible = false
+        this.btnDefaultLoading = false
+      })
     }
-
-  },
-  mounted () {
-    this.getData()
-    this.roleRight()
   }
+
 }
 </script>
 <style lang="stylus" scoped>
