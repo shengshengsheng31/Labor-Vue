@@ -5,7 +5,12 @@
         <el-button type="primary" @click="toRegister">新增人员</el-button>
         <div class="deptBox">
           <span>部门：</span>
-          <el-select v-model="deptId" placeholder="请选择" @change="deptChange">
+          <el-select
+            v-model="deptId"
+            placeholder="请选择"
+            @change="deptChange"
+            :disabled="selectDisabled"
+          >
             <el-option
               v-for="item in departments"
               :key="item.Id"
@@ -28,7 +33,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
-            <el-button @click="updateUser(scope.row)" type="warning" size="mini" >修改权限</el-button>
+            <el-button @click="updateUser(scope.row)" type="warning" size="mini">修改权限</el-button>
             <el-button @click="deleteUser(scope.row)" type="danger" size="mini">删除</el-button>
           </template>
         </el-table-column>
@@ -98,11 +103,13 @@ export default {
         { label: '普通用户', value: 0 },
         { label: '部门管理员', value: 1 },
         { label: '系统管理员', value: 2 }],
-      role: ''
+      role: '',
+      selectDisabled: false
     }
   },
   mounted () {
     this.getDepts()
+    this.roleRight()
   },
   methods: {
     // 根据部门获取用户
@@ -122,7 +129,7 @@ export default {
         all.DeptName = '全部'
         all.Id = '00000000-0000-0000-0000-000000000000'
         this.departments.unshift(all)
-        this.deptId = this.departments[0].Id
+        this.deptId = this.tokenParse.DeptId
         this.queryData.DeptId = this.deptId
         this.getUsers()
       })
@@ -183,6 +190,13 @@ export default {
     // 跳转到新增人员
     toRegister () {
       this.$router.push({ path: '/RegisterUser' })
+    },
+    // 选择权限
+    roleRight () {
+      if (this.tokenParse.Role !== 'admin') {
+        this.selectDisabled = true
+        this.options.pop()
+      }
     }
 
   }

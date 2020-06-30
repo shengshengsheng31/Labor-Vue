@@ -11,7 +11,7 @@
             {{userName}}
             <i class="el-icon-edit"></i>
           </el-link>
-          <el-button @click="quit">重新登录</el-button>
+          <el-button @click="quit">权限刷新</el-button>
         </div>
       </el-header>
       <el-container>
@@ -29,21 +29,18 @@
               <i class="el-icon-present"></i>
               <span slot="title">本期劳保</span>
             </el-menu-item>
-            <el-menu-item index="/LaborManage">
+            <el-menu-item index="/LaborManage" v-if="LaborVisible">
               <i class="el-icon-tickets"></i>
               <span slot="title">劳保管理</span>
             </el-menu-item>
-
-              <el-menu-item index="/UserManage">
-                <i class="el-icon-link"></i>
-                <span slot="title">人员管理</span>
-              </el-menu-item>
-
-            <el-menu-item index="/DepartmentManage">
+            <el-menu-item index="/UserManage"  v-if="UserVisible">
+              <i class="el-icon-link"></i>
+              <span slot="title">人员管理</span>
+            </el-menu-item>
+            <el-menu-item index="/DepartmentManage" v-if="DepartmentVisible">
               <i class="el-icon-notebook-1"></i>
               <span slot="title">部门管理</span>
             </el-menu-item>
-
           </el-menu>
         </el-aside>
 
@@ -63,7 +60,10 @@ export default {
     return {
       userName: '',
       isRouterAlive: true,
-      tokenParse: jwtDecode(window.sessionStorage.token)
+      tokenParse: jwtDecode(window.sessionStorage.token),
+      LaborVisible: true,
+      UserVisible: true,
+      DepartmentVisible: true
     }
   },
   mounted () {
@@ -91,7 +91,12 @@ export default {
     },
     // 判断权限
     roleRight () {
-      // console.log(this.tokenParse.Role)
+      if (this.tokenParse.Role === 'user') {
+        this.LaborVisible = this.UserVisible = this.DepartmentVisible = false
+      }
+      if (this.tokenParse.Role === 'deptManager') {
+        this.DepartmentVisible = false
+      }
     }
 
   }

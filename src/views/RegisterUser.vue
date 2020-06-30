@@ -15,7 +15,7 @@
           <el-input v-model="userForm.DomainAccount"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="userForm.DepartmentId" placeholder="选择部门" filterable>
+          <el-select v-model="userForm.DepartmentId" placeholder="选择部门" filterable :disabled="selectDisabled">
             <el-option
               v-for="item in departments"
               :key="item.Id"
@@ -43,6 +43,8 @@
   </div>
 </template>
 <script>
+import jwtDecode from 'jwt-decode'
+
 export default {
   data () {
     return {
@@ -63,18 +65,22 @@ export default {
         { label: '普通用户', value: 0 },
         { label: '部门管理员', value: 1 },
         { label: '系统管理员', value: 2 }
-      ]
+      ],
+      tokenParse: jwtDecode(window.sessionStorage.token),
+      selectDisabled: false
+
     }
   },
   mounted () {
     this.getDepts()
+    this.roleRight()
   },
   methods: {
     // 初始化、获取所有部门
     getDepts () {
       this.$http.get('api/Department/GetAllDepartment').then(res => {
         this.departments = res.data
-        this.userForm.DepartmentId = res.data[0].Id// 初始值，应为根据权限自己所在的部门
+        this.userForm.DepartmentId = this.tokenParse.DeptId
       }).catch(err => {
         this.$message.error(`获取失败-${err.response.data}`)
       })
@@ -97,6 +103,14 @@ export default {
     // 重置
     resetForm (formName) {
       this.$refs[formName].resetFields()
+    },
+    // 判断权限
+    roleRight () {
+      console.log(this.tokenParse)
+      if (this.tokenParse.Role === 'deptManager') {
+        this.roles.pop()
+        this.selectDisabled = true
+      }
     }
   }
 }

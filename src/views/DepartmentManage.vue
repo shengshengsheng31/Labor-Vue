@@ -39,6 +39,7 @@
   </div>
 </template>
 <script>
+
 export default {
   data () {
     return {
@@ -52,6 +53,7 @@ export default {
       deleteDialogVisible: false,
       deptName: '',
       addDisabled: true
+
     }
   },
   mounted () {

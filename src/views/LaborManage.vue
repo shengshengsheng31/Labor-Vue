@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <el-button type="primary" @click="toAddLabor">创建劳保</el-button>
+        <el-button type="primary" @click="toAddLabor" v-if="addVisible">创建劳保</el-button>
       </div>
       <el-table :data="laborData" style="width: 80%">
         <el-table-column type="expand">
@@ -18,8 +18,9 @@
         <el-table-column prop="UpdateTime" label="时间"></el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
-            <el-button @click="exlExport(scope.row)" type="primary" size="mini">导出</el-button>
-            <el-button @click="deleteLabor(scope.row)" type="danger" size="mini">删除</el-button>
+
+            <el-button @click="exlExport(scope.row)" type="primary" size="mini" :loading="btnLoading">导出</el-button>
+            <el-button @click="deleteLabor(scope.row)" type="danger" size="mini" v-if="deleteVisible">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,15 +47,22 @@
   </div>
 </template>
 <script>
+import jwtDecode from 'jwt-decode'
 
 export default {
+
   data () {
     return {
       laborData: [],
       total: 0,
       pageQuery: { PageNumber: 1, PageSize: 10 },
       deleteDialogVisible: false,
-      currentData: { Title: '', Options: '', Goods: '', Id: '', CreateTime: '', UodateTime: '' }
+      currentData: { Title: '', Options: '', Goods: '', Id: '', CreateTime: '', UodateTime: '' },
+      tokenParse: jwtDecode(window.sessionStorage.token),
+      addVisible: true,
+      deleteVisible: true,
+      btnLoading: false,
+      deptId: '00000000-0000-0000-0000-000000000000'
     }
   },
   methods: {
@@ -104,7 +112,11 @@ export default {
     },
     // 导出
     async exlExport (row) {
-      await this.$http.get('api/LaborDetail/ExportLabor', { params: { LaborId: row.Id, Title: row.Title }, responseType: 'blob' }).then(res => {
+      this.btnLoading = true
+      if (this.tokenParse.Role !== 'admin') {
+        this.deptId = this.tokenParse.DeptId
+      }
+      await this.$http.get('api/LaborDetail/ExportLabor', { params: { LaborId: row.Id, Title: row.Title, DeptId: this.deptId }, responseType: 'blob' }).then(res => {
         const blob = new Blob([res.data])// 构造一个blob对象来处理数据
         const fileName = `${row.Title}-${Date.now()}.xlsx`
         if ('download' in document.createElement('a')) { // 支持a标签download的浏览器
@@ -122,15 +134,24 @@ export default {
       }).catch(err => {
         this.$message.error(`下载失败${err.toString()}`)
       })
+      this.btnLoading = false
     },
     // 跳转到创建劳保
     toAddLabor () {
       this.$router.push({ path: '/LaborEdit' })
+    },
+    // 判断权限
+    roleRight () {
+      if (this.tokenParse.Role === 'deptManager') {
+        this.deleteVisible = false
+        this.addVisible = false
+      }
     }
 
   },
   mounted () {
     this.getData()
+    this.roleRight()
   }
 }
 </script>
