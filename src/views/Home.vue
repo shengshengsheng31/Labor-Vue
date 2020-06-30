@@ -11,7 +11,7 @@
             {{userName}}
             <i class="el-icon-edit"></i>
           </el-link>
-          <el-button @click="quit">权限刷新</el-button>
+          <el-button @click="quit">退出</el-button>
         </div>
       </el-header>
       <el-container>
@@ -80,7 +80,7 @@ export default {
     },
     quit () {
       window.sessionStorage.clear()
-      this.$router.push('/login')
+      this.$router.push({ path: '/login', query: { Id: this.tokenParse.jti } })
     },
     // 刷新
     reload () {

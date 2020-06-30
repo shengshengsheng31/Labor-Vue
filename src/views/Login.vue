@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container"  v-loading="loading">
+  <div class="login-container" v-loading="loading">
     <img src="@/assets/login-bg.png" alt class="wave" />
     <div class="container">
       <div class="login-box">
@@ -18,8 +18,17 @@
             inputTitle="Password"
             @inputContent="getPassword"
           />
-          <a href="#">Forget Password</a>
-          <input type="submit" class="btn" value="Login" @click.prevent="login" />
+          <el-tooltip class="item" effect="dark" content="使用域账号进行登录" placement="top-end">
+            <a href="#">Forget Password</a>
+          </el-tooltip>
+
+          <input
+            type="submit"
+            class="btn"
+            value="Login"
+            @click.prevent="login"
+            :disabled="btnDisabled"
+          />
         </form>
       </div>
     </div>
@@ -38,35 +47,26 @@ export default {
         Account: '',
         Password: ''
       },
-      loading: true
+      loading: false,
+      btnDisabled: false
     }
   },
   mounted () {
-    this.login()
+    if (this.$route.query.Id === undefined) {
+      this.login()
+    }
   },
   methods: {
-    // async login (event) {
-    //   if (this.user.Account.trim() === '') {
-    //     this.$message.error('请输入账号')
-    //     return
-    //   }
-    //   if (this.user.Password.trim() === '') {
-    //     this.$message.error('请输入密码')
-    //     return
-    //   }
-    //   await this.$http.post('api/user/login', this.user).then(res => {
-    //     this.$message.success('登录成功')
-    //     window.sessionStorage.setItem('token', res.data)
-    //     this.$router.push({ path: '/home' })
-    //   }).catch(err => {
-    //     this.$message.error(`登录失败-${err.response.data}`)
-    //   })
-    // },
     // 域账号登录
     login () {
-      this.$jsonp('http://localhost:22390/api/User/Login').then(res => {
-      // this.$jsonp('http://152.136.139.149:8091/api/User/Login').then(res => {
-      // this.$jsonp('http://10.10.42.81:8090/api/User/Login').then(res => {
+      if (this.$route.query.Id !== undefined && !this.validateForm()) {
+        return
+      }
+      this.loading = true
+      this.btnDisabled = true
+      this.$jsonp('http://localhost:22390/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
+        // this.$jsonp('http://152.136.139.149:8091/api/User/Login').then(res => {
+        // this.$jsonp('http://10.10.42.81:8090/api/User/Login').then(res => {
         window.sessionStorage.setItem('token', res)
         const tokenParse = jwtDecode(window.sessionStorage.token)
         console.log(tokenParse)
@@ -74,7 +74,9 @@ export default {
         this.$router.push('/home')
       }).catch(err => {
         console.log(err)
-        this.$message.error(`检查用户-${err.response}`)
+        this.$message.error(`登录失败，请检查用户-${err}`)
+        this.loading = false
+        this.btnDisabled = false
       })
     },
     getAccount (data) {
@@ -82,6 +84,14 @@ export default {
     },
     getPassword (data) {
       this.user.Password = data
+    },
+    // 检测表达内容
+    validateForm () {
+      if (this.user.Account === '' || this.user.Password === '') {
+        this.$message.error('填写帐号密码')
+        return false
+      }
+      return true
     }
   }
 }

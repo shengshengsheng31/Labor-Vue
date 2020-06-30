@@ -12,6 +12,7 @@
         class="input"
         @focus="focus"
         @blur="blur"
+        @keydown="enterDown"
       />
     </div>
   </div>
@@ -54,6 +55,11 @@ export default {
         event.target.parentNode.parentNode.classList.remove('exist')
       }
       this.$emit('inputContent', this.inputContent)
+    },
+    enterDown (value) {
+      if (value.key === 'Enter') {
+        this.$emit('inputContent', this.inputContent)
+      }
     }
 
   }
