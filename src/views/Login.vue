@@ -9,24 +9,29 @@
           <login-input
             @inputContent="getAccount"
             iconType="icon iconfont icon-usercenter"
-            inputTitle="Account"
+            inputTitle="域账号"
           />
           <login-input
             inputType="password"
             autocomplete="current-password"
             iconType="icon iconfont icon-password"
-            inputTitle="Password"
+            inputTitle="密码"
             @inputContent="getPassword"
           />
-          <el-tooltip class="item" effect="dark" content="使用域账号进行登录" placement="top-end">
-            <a href="#">Forget Password</a>
-          </el-tooltip>
+          <el-popover placement="right-end" width="160" v-model="popVisible">
+            <p>是否使用本机登录？</p>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="popVisible = false">取消</el-button>
+              <el-button type="primary" size="mini" @click="autoLogin">确定</el-button>
+            </div>
+            <a href="#login?Id=Forget" slot="reference">忘记密码</a>
+          </el-popover>
 
           <input
             type="submit"
             class="btn"
-            value="Login"
-            @click.prevent="login"
+            value="登录"
+            @click.prevent="manulLogin"
             :disabled="btnDisabled"
           />
         </form>
@@ -43,25 +48,42 @@ export default {
   components: { LoginInput },
   data () {
     return {
+      // 帐号密码
       user: {
         Account: '',
         Password: ''
       },
+      // 登录时的loading
       loading: false,
-      btnDisabled: false
+      // 登录按钮禁用
+      btnDisabled: false,
+      // 忘记密码提示框
+      popVisible: false
     }
   },
   mounted () {
+    // 初始状态地址栏无参数则直接登录
     if (this.$route.query.Id === undefined) {
-      this.login()
+      this.autoLogin()
     }
   },
   methods: {
-    // 域账号登录
-    login () {
-      if (this.$route.query.Id !== undefined && !this.validateForm()) {
+    // 自动登录，使用本机域账号
+    autoLogin () {
+      this.popVisible = false
+      this.user.Account = ''
+      this.user.Password = ''
+      this.login()
+    },
+    // 帐号密码登录
+    manulLogin () {
+      if (!this.validateForm()) {
         return
       }
+      this.login()
+    },
+    // 登录，不同环境使用不同的jsonp
+    login () {
       this.loading = true
       this.btnDisabled = true
       // this.$jsonp('http://localhost:22390/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
@@ -69,23 +91,23 @@ export default {
       this.$jsonp('http://10.10.42.81:8090/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
         window.sessionStorage.setItem('token', res)
         const tokenParse = jwtDecode(window.sessionStorage.token)
-        console.log(tokenParse)
         this.$message.success(`欢迎-${tokenParse.UserName}`)
         this.$router.push('/home')
       }).catch(err => {
-        console.log(err)
         this.$message.error(`登录失败，请检查用户-${err}`)
         this.loading = false
         this.btnDisabled = false
       })
     },
+    // 获取帐号组件值
     getAccount (data) {
       this.user.Account = data
     },
+    // 获取密码组件值
     getPassword (data) {
       this.user.Password = data
     },
-    // 检测表达内容
+    // 检验表格内容
     validateForm () {
       if (this.user.Account === '' || this.user.Password === '') {
         this.$message.error('填写帐号密码')
@@ -195,4 +217,5 @@ a:hover {
   text-align: center;
   font-size: 18px;
 }
+
 </style>
