@@ -41,6 +41,7 @@ const routes = [
       { path: '/UserManage', component: UserManage, name: 'UserManage' },
       { path: '/RoleManage', component: RoleManage, name: 'RoleManage' },
       { path: '/MenuManage', component: MenuManage, name: 'MenuManage' }
+
     ]
 
   },
