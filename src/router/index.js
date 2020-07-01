@@ -1,18 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/Login.vue'
-import Test from '../components/LoginInput.vue'
-import LaborEdit from '../views/LaborEdit.vue'
-import LaborSelect from '../views/LaborSelect.vue'
-import LaborManage from '../views/LaborManage.vue'
-import Home from '../views/Home.vue'
-import DetailList from '../views/DetailList.vue'
-import RegisterUser from '../views/RegisterUser.vue'
-
-import DepartmentManage from '../views/DepartmentManage.vue'
-import UserManage from '../views/UserManage.vue'
-import RoleManage from '../views/RoleManage.vue'
-import MenuManage from '../views/MenuManage.vue'
+// import Login from '../views/Login.vue'
+// import LaborEdit from '../views/LaborEdit.vue'
+// import LaborSelect from '../views/LaborSelect.vue'
+// import LaborManage from '../views/LaborManage.vue'
+// import Home from '../views/Home.vue'
+// import DetailList from '../views/DetailList.vue'
+// import RegisterUser from '../views/RegisterUser.vue'
+// import DepartmentManage from '../views/DepartmentManage.vue'
+// import UserManage from '../views/UserManage.vue'
 
 Vue.use(VueRouter)
 
@@ -27,26 +23,25 @@ const routes = [
     path: '/',
     redirect: '/login'
   },
+  { path: '/login', component: () => import(/* webpackChunkName: "login_home_LaborSelect" */'../views/Login.vue') },
   {
     path: '/home',
-    component: Home,
+    component: () => import(/* webpackChunkName: "login_home_LaborSelect" */'../views/Home.vue'),
     children: [
-      { path: '/LaborManage', component: LaborManage },
-      { path: '/LaborEdit', component: LaborEdit },
-      { path: '/LaborSelect', component: LaborSelect, name: 'LaborSelect' },
-      { path: '/DetailList', component: DetailList, name: 'DetailList' },
-      { path: '/RegisterUser', component: RegisterUser, name: 'RegisterUser' },
+      { path: '/LaborSelect', component: () => import(/* webpackChunkName: "login_home_LaborSelect" */'../views/LaborSelect.vue'), name: 'LaborSelect' },
 
-      { path: '/DepartmentManage', component: DepartmentManage, name: 'DepartmentManage' },
-      { path: '/UserManage', component: UserManage, name: 'UserManage' },
-      { path: '/RoleManage', component: RoleManage, name: 'RoleManage' },
-      { path: '/MenuManage', component: MenuManage, name: 'MenuManage' }
+      { path: '/LaborManage', component: () => import(/* webpackChunkName: "LaborManage_LaborEdit" */'../views/LaborManage.vue') },
+      { path: '/LaborEdit', component: () => import(/* webpackChunkName: "LaborManage_LaborEdit_DetailList" */'../views/LaborEdit.vue') },
+      { path: '/DetailList', component: () => import(/* webpackChunkName: "LaborManage_LaborEdit_DetailList" */'../views/DetailList.vue'), name: 'DetailList' },
+
+      { path: '/RegisterUser', component: () => import(/* webpackChunkName: "RegisterUser_UserManage" */'../views/RegisterUser.vue'), name: 'RegisterUser' },
+      { path: '/UserManage', component: () => import(/* webpackChunkName: "RegisterUser_UserManage" */'../views/UserManage.vue'), name: 'UserManage' },
+
+      { path: '/DepartmentManage', component: () => import(/* webpackChunkName: "DepartmentManage" */'../views/DepartmentManage.vue'), name: 'DepartmentManage' }
 
     ]
 
-  },
-  { path: '/login', component: Login },
-  { path: '/test', component: Test }
+  }
 
 ]
 

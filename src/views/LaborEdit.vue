@@ -15,7 +15,7 @@
           :prop="'options.' + index + '.goods'"
           :rules="laborFormRule.optionRule"
         >
-          <el-input v-model="item.goods">
+          <el-input v-model="item.goods"  >
             <el-button
               slot="append"
               @click.prevent="removeOption(item)"
