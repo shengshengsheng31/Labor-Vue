@@ -15,7 +15,7 @@
           :prop="'options.' + index + '.goods'"
           :rules="laborFormRule.optionRule"
         >
-          <el-input v-model="item.goods"  >
+          <el-input v-model="item.goods">
             <el-button
               slot="append"
               @click.prevent="removeOption(item)"
@@ -87,10 +87,18 @@ export default {
           const goodslist = []
           const optioins = []
           this.labor.Title = this.laborForm.title
+          let validFlag = false
           this.laborForm.options.forEach(item => {
+            if (item.goods.indexOf(';') !== -1) {
+              this.$message.error('不能包含符号(;)')
+              validFlag = true
+            }
             goodslist.push(item.goods)
             optioins.push(item.option)
           })
+          if (validFlag) {
+            return
+          }
           this.labor.Goods = goodslist.join(';')
           this.labor.Options = optioins.join(';')
 

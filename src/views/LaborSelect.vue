@@ -24,7 +24,17 @@
             <el-progress :text-inside="true" :stroke-width="20" :percentage="rateList[index]"></el-progress>
           </div>
         </div>
-        <el-button type="primary" @click="selectLabor">选择劳保</el-button>
+        <el-button
+          type="primary"
+          @click="selectLabor"
+          class="btnChoose"
+          :disabled="selectDisabled"
+        >选择劳保</el-button>
+        <div class="surrogateBox" v-if="tokenParse.Role!=='user'">
+          <el-input placeholder="请输入代选工号" v-model="surrogateEmpNum" @change="enterToFind"></el-input>
+          <el-button type="warning" :disabled="surrogateDisabled" @click="selectLaborSurrogate">劳保代选</el-button>
+        </div>
+        <span class="surrogateName">{{surrogateName}}</span>
       </div>
     </el-card>
   </div>
@@ -42,6 +52,7 @@ export default {
         Options: '',
         Goods: '',
         Id: ''
+
       },
       // 劳保品列表
       goodsList: [],
@@ -51,7 +62,18 @@ export default {
       choiceIndex: 0,
       // 选项比例
       rateList: [],
-      laborSelected: ''
+      // 显示已选择的劳保
+      laborSelected: '',
+      // 代选工号
+      surrogateEmpNum: '',
+      // 选择劳保按钮可用
+      selectDisabled: false,
+      // 代选劳保可用
+      surrogateDisabled: false,
+      // 被代选的人名字
+      surrogateName: '',
+      // 查询到的代选人信息
+      surrogateUser: { Id: '', DomainAccount: '', UserName: '', EmpNo: '' }
     }
   },
   mounted () {
@@ -109,13 +131,50 @@ export default {
         this.$message.error(`选择失败-${err.response.data}`)
       })
     },
+    // 代选劳保
+    selectLaborSurrogate () {
+      if (this.surrogateName === '' || this.surrogateName === '未查询到') {
+        return
+      }
+      this.$http.post('api/LaborDetail/CreateLaborDetail', { UserId: this.surrogateUser.Id, LaborId: this.LaborHead.Id, Option: this.optionsList[this.choiceIndex], Goods: this.goodsList[this.choiceIndex] }).then(res => {
+        this.getOptionRate()
+        this.laborSelected = this.optionsList[this.choiceIndex]
+        this.$message.success('选择成功')
+      }).catch(err => {
+        this.$message.error(`选择失败-${err.response.data}`)
+      })
+    },
     // 点击div即可选择radio
     chooseToRadio (index) {
       this.choiceIndex = index
+    },
+    // 回车查找
+    enterToFind () {
+      if (this.surrogateEmpNum === '') {
+        return
+      }
+      this.$http.get('/api/User/GetUserByNum', { params: { EmpNo: this.surrogateEmpNum } }).then(res => {
+        this.surrogateUser = res.data
+        if (this.surrogateUser !== '') {
+          this.surrogateName = `被代选人:${this.surrogateUser.UserName}`
+        } else {
+          this.surrogateName = '未查询到'
+        }
+      }).catch(err => {
+        this.$message.error(`查询用户失败-${err.response.data}`)
+      })
     }
   },
-  computed: {
-
+  watch: {
+    surrogateEmpNum (val) {
+      if (val !== '') {
+        this.selectDisabled = true
+        this.surrogateDisabled = false
+      } else {
+        this.selectDisabled = false
+        this.surrogateDisabled = true
+      }
+    }
   }
 }
 </script>
@@ -152,12 +211,28 @@ h3 {
   cursor: pointer;
 }
 
-.el-button {
+.btnChoose {
   width: 30%;
   margin-top: 5rem;
 }
 
+.surrogateBox {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: space-between;
+  width: 30%;
+
+  >.el-input {
+    width: 60%;
+  }
+}
+
 .el-radio {
   margin: 0rem 0 2rem 0;
+}
+
+.surrogateName {
+  margin-top: 1rem;
+  color: #67C23A;
 }
 </style>

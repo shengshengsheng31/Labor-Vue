@@ -11,11 +11,16 @@
         <el-form-item label="工号" prop="EmpNo">
           <el-input v-model="userForm.EmpNo"></el-input>
         </el-form-item>
-        <el-form-item label="域账号" prop="DomainAccount">
+        <el-form-item label="域账号">
           <el-input v-model="userForm.DomainAccount"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="userForm.DepartmentId" placeholder="选择部门" filterable :disabled="selectDisabled">
+          <el-select
+            v-model="userForm.DepartmentId"
+            placeholder="选择部门"
+            filterable
+            :disabled="selectDisabled"
+          >
             <el-option
               v-for="item in departments"
               :key="item.Id"
@@ -57,8 +62,8 @@ export default {
       },
       userFormrules: {
         UserName: { required: true, message: '输入姓名', trigger: 'blur' },
-        EmpNo: { required: true, message: '输入工号', trigger: 'blur' },
-        DomainAccount: { required: true, message: '输入域账号', trigger: 'blur' }
+        EmpNo: { required: true, message: '输入工号', trigger: 'blur' }
+
       },
       departments: [{ Id: '', DeptName: '' }],
       roles: [
