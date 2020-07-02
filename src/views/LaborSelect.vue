@@ -104,7 +104,7 @@ export default {
       }).then(res => {
         this.rateList = []
         res.data.forEach(item => {
-          this.rateList.push(item.OptionCount / item.Total * 100)
+          this.rateList.push(Math.floor((item.OptionCount / item.Total * 100)))
         })
       }).catch(err => {
         this.$message.error(`获取选项比例失败-${err.response.data}`)

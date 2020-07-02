@@ -111,7 +111,6 @@ export default {
     },
     // 判断权限
     roleRight () {
-      console.log(this.tokenParse)
       if (this.tokenParse.Role === 'deptManager') {
         this.roles.pop()
         this.selectDisabled = true
