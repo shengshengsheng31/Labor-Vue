@@ -2,6 +2,11 @@ module.exports = {
   css: {
     extract: false
   },
+  // presets: [
+  //   ['@vue/app', {
+  //     useBuiltIns: 'entry'
+  //   }]
+  // ],
   chainWebpack: config => {
     // 发布模式
     config.when(process.env.NODE_ENV === 'production', config => {

@@ -34,8 +34,8 @@ const routes = [
       { path: '/LaborEdit', component: () => import(/* webpackChunkName: "LaborManage_LaborEdit_DetailList" */'../views/LaborEdit.vue') },
       { path: '/DetailList', component: () => import(/* webpackChunkName: "LaborManage_LaborEdit_DetailList" */'../views/DetailList.vue'), name: 'DetailList' },
 
-      { path: '/RegisterUser', component: () => import(/* webpackChunkName: "RegisterUser_UserManage" */'../views/RegisterUser.vue'), name: 'RegisterUser' },
-      { path: '/UserManage', component: () => import(/* webpackChunkName: "RegisterUser_UserManage" */'../views/UserManage.vue'), name: 'UserManage' },
+      { path: '/UserEdit', component: () => import(/* webpackChunkName: "UserEdit_UserManage" */'../views/UserEdit.vue'), name: 'UserEdit' },
+      { path: '/UserManage', component: () => import(/* webpackChunkName: "UserEdit_UserManage" */'../views/UserManage.vue'), name: 'UserManage' },
 
       { path: '/DepartmentManage', component: () => import(/* webpackChunkName: "DepartmentManage" */'../views/DepartmentManage.vue'), name: 'DepartmentManage' }
 

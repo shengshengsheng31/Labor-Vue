@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-card class="box-card">
+    <el-card class="box-card" v-loading="loading">
       <div slot="header" class="clearfix">
         <span>选择劳保--</span>
         <h3 v-if="laborSelected ===undefined">当前未选择任何劳保</h3>
@@ -69,11 +69,13 @@ export default {
       // 选择劳保按钮可用
       selectDisabled: false,
       // 代选劳保可用
-      surrogateDisabled: false,
+      surrogateDisabled: true,
       // 被代选的人名字
       surrogateName: '',
       // 查询到的代选人信息
-      surrogateUser: { Id: '', DomainAccount: '', UserName: '', EmpNo: '' }
+      surrogateUser: { Id: '', DomainAccount: '', UserName: '', EmpNo: '' },
+      // 加载中
+      loading: true
     }
   },
   mounted () {
@@ -88,6 +90,7 @@ export default {
         this.optionsList = this.LaborHead.Options.split(';')
         this.getOptionRate()
         this.getSelected()
+        this.loading = false
       }).catch(err => {
         this.$message.error(`获取劳保失败-${err.response.data}`)
       })
@@ -134,6 +137,7 @@ export default {
     // 代选劳保
     selectLaborSurrogate () {
       if (this.surrogateName === '' || this.surrogateName === '未查询到') {
+        this.$message.error('未查询到被代选人，检查工号')
         return
       }
       this.$http.post('api/LaborDetail/CreateLaborDetail', { UserId: this.surrogateUser.Id, LaborId: this.LaborHead.Id, Option: this.optionsList[this.choiceIndex], Goods: this.goodsList[this.choiceIndex] }).then(res => {
@@ -179,10 +183,6 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.box-card {
-  height: 80%;
-}
-
 .cardBody {
   display: flex;
   flex-direction: column;
@@ -221,6 +221,7 @@ h3 {
   display: flex;
   justify-content: space-between;
   width: 30%;
+  margin-bottom: 5rem;
 
   >.el-input {
     width: 60%;

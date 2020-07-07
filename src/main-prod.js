@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -12,8 +13,8 @@ import './assets/fonts/iconfont.css'
 // axios挂载到vue原型
 import axios from 'axios'
 
-// axios.defaults.baseURL = 'http://10.10.42.81:8090'
-axios.defaults.baseURL = 'http://152.136.139.149:8091'
+axios.defaults.baseURL = 'http://10.10.42.81:8090'
+// axios.defaults.baseURL = 'http://152.136.139.149:8091'
 axios.interceptors.request.use(config => {
   config.headers.Authorization = 'bearer ' + sessionStorage.getItem('token')
   return config

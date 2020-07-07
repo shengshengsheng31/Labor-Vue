@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>注册人员</span>
+        <span>{{pageTitle}}</span>
       </div>
       <el-form :model="userForm" :rules="userFormrules" ref="userForm" label-width="100px">
         <el-form-item label="姓名" prop="UserName">
@@ -58,7 +58,8 @@ export default {
         EmpNo: '',
         DomainAccount: '',
         DepartmentId: '',
-        Level: 0
+        Level: 0,
+        Id: ''
       },
       userFormrules: {
         UserName: { required: true, message: '输入姓名', trigger: 'blur' },
@@ -72,20 +73,21 @@ export default {
         { label: '系统管理员', value: 2 }
       ],
       tokenParse: jwtDecode(window.sessionStorage.token),
-      selectDisabled: false
+      selectDisabled: false,
+      // 标题
+      pageTitle: ''
 
     }
   },
   mounted () {
     this.getDepts()
-    this.roleRight()
   },
   methods: {
     // 初始化、获取所有部门
     getDepts () {
       this.$http.get('api/Department/GetAllDepartment').then(res => {
         this.departments = res.data
-        this.userForm.DepartmentId = this.tokenParse.DeptId
+        this.roleRight()
       }).catch(err => {
         this.$message.error(`获取失败-${err.response.data}`)
       })
@@ -94,9 +96,13 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let url = '/api/User/Register'
+          if (this.pageTitle === '修改人员') {
+            url = '/api/User/UpdateUser'
+          }
           this.userForm.EmpNo = Number.parseInt(this.userForm.EmpNo)
-          this.$http.post('/api/User/Register', this.userForm).then(res => {
-            this.$message.success(`用户${this.userForm.UserName}创建成功`)
+          this.$http.post(url, this.userForm).then(res => {
+            this.$message.success(`${this.pageTitle}${this.userForm.UserName}成功`)
           }).catch(err => {
             this.$message.error(`创建失败-${err.response.data}`)
           })
@@ -115,7 +121,25 @@ export default {
         this.roles.pop()
         this.selectDisabled = true
       }
+      this.isRegister()
+    },
+    // 判断创建还是修改
+    isRegister () {
+      const query = this.$route.query
+      if (query.Id !== undefined) {
+        this.userForm.UserName = query.UserName
+        this.userForm.EmpNo = query.EmpNo
+        this.userForm.DomainAccount = query.DomainAccount
+        this.userForm.DepartmentId = query.DepartmentId
+        this.userForm.Level = query.Level
+        this.userForm.Id = query.Id
+        this.pageTitle = '修改人员'
+      } else {
+        this.userForm.DepartmentId = this.tokenParse.DeptId
+        this.pageTitle = '注册人员'
+      }
     }
+
   }
 }
 </script>

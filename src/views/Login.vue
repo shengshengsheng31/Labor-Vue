@@ -85,8 +85,8 @@ export default {
     login () {
       this.loading = true
       this.btnDisabled = true
-      // this.$jsonp('http://localhost:22390/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
-      this.$jsonp('http://152.136.139.149:8091/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
+      this.$jsonp('http://localhost:22390/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
+      // this.$jsonp('http://152.136.139.149:8091/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
       // this.$jsonp('http://10.10.42.81:8090/api/User/Login', { UserName: this.user.Account, Password: this.user.Password }).then(res => {
         window.sessionStorage.setItem('token', res)
         const tokenParse = jwtDecode(window.sessionStorage.token)

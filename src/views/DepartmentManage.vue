@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card class="box-card"  v-loading="loading">
       <div slot="header" class="clearfix">
         <span>部门：</span>
         <el-input v-model="deptName" placeholder="请输入内容"></el-input>
@@ -52,7 +52,8 @@ export default {
       updateDialogVisible: false,
       deleteDialogVisible: false,
       deptName: '',
-      addDisabled: true
+      addDisabled: true,
+      loading: true
 
     }
   },
@@ -64,6 +65,7 @@ export default {
     getAllDept () {
       this.$http.get('api/Department/GetAllDepartment').then(res => {
         this.deptData = res.data
+        this.loading = false
       }).catch(err => {
         this.$message.error(err.response.data)
       })

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card class="box-card" v-loading="loading">
       <div slot="header" class="cardHead">
         <div>
           <span>本期劳保{{pageTitle}}</span>
@@ -64,7 +64,8 @@ export default {
       selectDisabled: false,
       PageNumber: 1,
       PageSize: 10,
-      total: 0
+      total: 0,
+      loading: true
     }
   },
   mounted () {
@@ -105,7 +106,7 @@ export default {
         // this.finishTitle = `完成(${this.finishCount}/${res.data.length})`
         this.finishTitle = '完成'
         this.detailData = res.data
-        console.log(this.detailData)
+        this.loading = false
       }).catch(err => {
         this.$message.error(`获取数据失败-${err.response.data}`)
       })

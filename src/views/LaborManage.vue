@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card class="box-card" v-loading="loading">
       <div slot="header" class="clearfix">
         <el-button type="primary" @click="toAddLabor" v-if="addVisible">创建劳保</el-button>
       </div>
@@ -96,7 +96,8 @@ export default {
       Goods: '',
       goodsOptions: [{ goods: '', option: '' }],
       btnDefaultLoading: false,
-      btnDefaultDisabled: false
+      btnDefaultDisabled: false,
+      loading: true
 
     }
   },
@@ -110,6 +111,9 @@ export default {
       await this.$http.get('api/LaborHead/GetAllLaborHead', { params: this.pageQuery }).then(res => {
         this.laborData = res.data
         this.total = parseInt(res.headers['pagination-x'])
+        this.loading = false
+      }).catch(err => {
+        this.$message.error(`获取劳保失败-${err.response.data}`)
       })
     },
     // 待定
