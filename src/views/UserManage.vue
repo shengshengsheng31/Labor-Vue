@@ -297,6 +297,7 @@ export default {
     },
     // 上传失败
     uploadError (response) {
+      console.log(this.actionUrl)
       this.$message.error(response.toString())
     }
   }
