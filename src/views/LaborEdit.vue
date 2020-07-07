@@ -110,7 +110,6 @@ export default {
               this.$message.error(`创建失败-${err.response.data}`)
             })
           } else {
-            console.log(Object.assign(this.labor, { Id: this.$route.query.Id }))
             await this.$http.post('api/LaborHead/UpdateLaborHead', Object.assign(this.labor, { Id: this.$route.query.Id })).then(res => {
               this.$message.success('修改成功')
               this.$router.push('/LaborManage')

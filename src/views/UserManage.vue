@@ -175,7 +175,7 @@ export default {
         this.userData = res.data
         this.loading = false
       }).catch(err => {
-        console.log(err)
+        this.$message.error(`获取用户失败-${err.response.data}`)
       })
     },
     // 获取所有部门
@@ -190,7 +190,7 @@ export default {
         this.queryData.DeptId = this.deptId
         this.getUsers()
       }).catch(err => {
-        console.log(`获取部门失败-${err.response.data}`)
+        this.$message.error(`获取部门失败-${err.response.data}`)
       })
     },
     // 部门改变
@@ -210,13 +210,11 @@ export default {
     },
     // 显示删除对话框
     deleteUser (row) {
-      // console.log(row)
       this.currentData = row
       this.deleteDialogVisible = true
     },
     // 确认删除
     confirmDelete () {
-      console.log(this.currentData.Id)
       this.$http.delete('api/User', { params: { Id: this.currentData.Id } }).then(res => {
         this.$message.success('删除成功')
         this.deleteDialogVisible = false
@@ -272,7 +270,7 @@ export default {
         this.userData = res.data
         this.total = this.userData.length
       }).catch(err => {
-        console.log(err)
+        this.$message.error(`查询失败-${err.response.data}`)
       })
     },
     // 显示导入框
@@ -290,14 +288,12 @@ export default {
     },
     // 上传成功
     uploadSuccess (res) {
-      console.log(res)
       this.getUsers()
       this.$refs.uploadBox.clearFiles()
       this.$message.success(`操作成功,导入${res.countOk}条,跳过${res.countSkip}条`)
     },
     // 上传失败
     uploadError (response) {
-      console.log(this.actionUrl)
       this.$message.error(response.toString())
     }
   }
