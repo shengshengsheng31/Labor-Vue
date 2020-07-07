@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <div>
           <el-button type="primary" @click="toRegister">新增人员</el-button>
-          <el-button type="warning" @click="showUpload">导入</el-button>
+          <el-button type="warning" @click="showUpload" v-if="importVisible">导入</el-button>
         </div>
         <el-input class="searchBox" placeholder="请输入内容" v-model="queryUserData.QueryString">
           <el-select v-model="queryUserData.QueryType" slot="prepend" placeholder="请选择">
@@ -143,6 +143,7 @@ export default {
         PageNumber: 1,
         PageSize: 5,
         DeptId: ''
+
       },
       total: 0,
       deleteDialogVisible: false,
@@ -158,8 +159,8 @@ export default {
       queryUserData: { QueryType: '', QueryString: '' },
       uploadDialogVisible: false,
       actionUrl: `${this.$http.defaults.baseURL}api/User/ImportExcel`,
-      acceptFile: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'// 'application/vnd.ms-excel'   // 接受的文件类型
-
+      acceptFile: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // 'application/vnd.ms-excel'   // 接受的文件类型
+      importVisible: true
     }
   },
   mounted () {
@@ -249,10 +250,11 @@ export default {
     toRegister () {
       this.$router.push({ path: '/UserEdit' })
     },
-    // 选择权限
+    // 判断权限
     roleRight () {
       if (this.tokenParse.Role !== 'admin') {
         this.selectDisabled = true
+        this.importVisible = false
         this.options.pop()
       }
     },
@@ -291,7 +293,7 @@ export default {
       console.log(res)
       this.getUsers()
       this.$refs.uploadBox.clearFiles()
-      this.$message.success(`操作成功,导入${res.countOk},跳过${res.countSkip}条`)
+      this.$message.success(`操作成功,导入${res.countOk}条,跳过${res.countSkip}条`)
     },
     // 上传失败
     uploadError (response) {
