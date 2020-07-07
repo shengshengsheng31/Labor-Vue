@@ -15,7 +15,9 @@
             <el-link type="primary" @click="toDetail(scope.row)">{{scope.row.Title}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="UpdateTime" label="时间"></el-table-column>
+        <el-table-column prop="UpdateTime" label="时间">
+        <template v-slot="scope">{{scope.row.UpdateTime | dataFormat}}</template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="setDefault(scope.row)" type="warning" size="mini" >设置默认劳保</el-button>
@@ -66,7 +68,7 @@
         ></el-option>
       </el-select>
       <br />
-      <span class="attention">将对未进行劳保选择的人进行劳保设置，已选择的劳保仍维持原样</span>
+      <span class="attention">将对未进行劳保选择的人进行劳保设置，已选择的劳保仍维持原样。只针对当前用户的部门操作</span>
       <span slot="footer">
         <el-button @click="defaultDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmSetDefault" :loading="btnDefaultLoading" :disabled="btnDefaultDisabled">确 定</el-button>

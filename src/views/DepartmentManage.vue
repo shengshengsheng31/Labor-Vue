@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card"  v-loading="loading">
+    <el-card class="box-card" v-loading="loading">
       <div slot="header" class="clearfix">
         <span>部门：</span>
         <el-input v-model="deptName" placeholder="请输入内容"></el-input>
@@ -124,7 +124,7 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.el-input {
+.clearfix >.el-input {
   width: 20rem;
   margin: 0 3rem;
 }
